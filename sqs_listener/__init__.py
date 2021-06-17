@@ -18,7 +18,7 @@ import time
 import logging
 import os
 import sys
-from sqs_launcher import SqsLauncher
+from ..sqs_launcher import SqsLauncher
 from abc import ABCMeta, abstractmethod
 
 # ================
@@ -26,6 +26,7 @@ from abc import ABCMeta, abstractmethod
 # ================
 
 sqs_logger = logging.getLogger('sqs_listener')
+
 
 class SqsListener(object):
     __metaclass__ = ABCMeta
@@ -38,6 +39,7 @@ class SqsListener(object):
         aws_access_key = kwargs.get('aws_access_key', '')
         aws_secret_key = kwargs.get('aws_secret_key', '')
 
+        boto3_session = None
         if len(aws_access_key) != 0 and len(aws_secret_key) != 0:
             boto3_session = boto3.Session(
                 aws_access_key_id=aws_access_key,
