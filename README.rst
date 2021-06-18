@@ -138,6 +138,16 @@ Sending messages
   <http://boto3.readthedocs.io/en/latest/reference/services/sqs.html#SQS.Client.send_message>`_.
   The method returns the response from SQS.
 
+  This fork supports sending of messages larger than 256kBytes by utilizing https://pypi.org/project/sqs-extended-client/.
+  Two additional keyword arguments have been added to configure the S3 bucket and message size threshold for switching to S3:
+
+
+  - large_payload_bucket=<S3 bucket name> (default=None) and
+  - large_payload_threshold=<message size in bytes> (default=262144)
+
+
+
+
 **Launcher Example**
 
 ::
@@ -146,6 +156,15 @@ Sending messages
 
     launcher = SqsLauncher('my-queue')
     response = launcher.launch_message({'param1': 'hello', 'param2': 'world'})
+
+**Launcher large message example**
+
+::
+
+    from sqs_launcher import SqsLauncher
+
+    launcher = SqsLauncher('my-queue', large_payload_bucket='my-bucket', large_payload_threshold=256)
+    response = launcher.launch_message({'param1': '*'*256})
 
 Important Notes
 ~~~~~~~~~~~~~~~

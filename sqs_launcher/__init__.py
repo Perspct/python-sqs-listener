@@ -17,6 +17,7 @@ import os
 
 import boto3
 import boto3.session
+import sqs_extended_client
 
 # ================
 # start class
@@ -27,7 +28,12 @@ sqs_logger = logging.getLogger('sqs_listener')
 
 class SqsLauncher(object):
 
-    def __init__(self, queue=None, queue_url=None, create_queue=False, visibility_timeout='600'):
+    def __init__(self,
+                 queue=None,
+                 queue_url=None,
+                 create_queue=False, visibility_timeout='600',
+                 large_payload_bucket=None,
+                 large_payload_threshold=262144):
         """
         :param queue: (str) name of queue to listen to
         :param queue_url: (str) url of queue to listen to
@@ -46,6 +52,8 @@ class SqsLauncher(object):
         # new session for each instantiation
         self._session = boto3.session.Session()
         self._client = self._session.client('sqs')
+        self._client.large_payload_support = large_payload_bucket
+        self._client.message_size_threshold = large_payload_threshold
 
         self._queue_name = queue
         self._queue_url = queue_url
